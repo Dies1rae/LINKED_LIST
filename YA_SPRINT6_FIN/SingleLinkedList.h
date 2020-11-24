@@ -163,6 +163,9 @@ public:
         this->size_ = 0;
     }
     SingleLinkedList& operator=(const SingleLinkedList& rhs) {
+        if (*this == rhs) {
+            return *this;
+        }
         SingleLinkedList tmp_othrs(rhs);
         this->swap(tmp_othrs);
         return *this;
