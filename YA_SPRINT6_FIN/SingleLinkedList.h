@@ -115,26 +115,16 @@ public:
     }
 
     //constructors
-    SingleLinkedList() = default;
+    SingleLinkedList() :head_(), size_(0) {};
     SingleLinkedList(std::initializer_list<TType> values) {
-        std::stack<TType> tmpvals;
-        for (auto val : values) {
-            tmpvals.push(val);
-        }
-        while (!tmpvals.empty()) {
-            this->PushFront(tmpvals.top());
-            tmpvals.pop();
-        }
+        SingleLinkedList tmp;
+        this->fromContainer(tmp, values);
+        this->swap(tmp);
     }
     SingleLinkedList(const SingleLinkedList& other) {
-        std::stack<TType> tmpvals;
-        for (auto val : other) {
-            tmpvals.push(val);
-        }
-        while (!tmpvals.empty()) {
-            this->PushFront(tmpvals.top());
-            tmpvals.pop();
-        }
+        SingleLinkedList tmp;
+        this->fromContainer(tmp, other);
+        this->swap(tmp);
     }
     ~SingleLinkedList() {
         Clear();
@@ -201,6 +191,18 @@ public:
 private:
     Node head_;
     size_t size_ = 0;
+
+    template<typename TContainer>
+    static void fromContainer(SingleLinkedList& base_, TContainer& values) {
+        std::stack<TType> inverter;
+        for (const auto& value : values) {
+            inverter.push(value);
+        }
+        while (!inverter.empty()) {
+            base_.PushFront(inverter.top());
+            inverter.pop();
+        }
+    }
 };
 
 
@@ -212,8 +214,9 @@ void swap(SingleLinkedList<TType>& lhs, SingleLinkedList<TType>& rhs) noexcept {
 
 template <typename TType>
 bool operator==(const SingleLinkedList<TType>& lhs, const SingleLinkedList<TType>& rhs) {
-    for (auto ptr_lhs = lhs.begin(), ptr_rhs = rhs.begin(); ptr_lhs != lhs.end(); ptr_lhs++, ptr_rhs++) {
-        if (!(*ptr_lhs == *ptr_rhs)) {
+    auto ptr_lhs = lhs.begin(), ptr_rhs = rhs.begin();
+    for (; ptr_lhs != lhs.end(); ptr_lhs++, ptr_rhs++) {
+        if (!(ptr_lhs == ptr_rhs)) {
             return false;
         }
     }
