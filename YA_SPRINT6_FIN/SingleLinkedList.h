@@ -5,16 +5,17 @@
 #include <algorithm>
 #include <stack>
 
+
 template <typename TType>
 class SingleLinkedList {
     //NODE
     struct Node {
         //constructors
         Node() = default;
-        Node(const TType& val, Node* next)
-            : value(val)
-            , next_node(next) {
-        }
+
+        //rewrite
+        Node(const TType& val, Node* next): value(val), next_node(next) {}
+
         //defaults
         TType value;
         Node* next_node = nullptr;
@@ -88,27 +89,35 @@ public:
     [[nodiscard]] Iterator begin() noexcept {
         return Iterator(this->head_.next_node);
     }
+
     [[nodiscard]] Iterator end() noexcept {
         return Iterator(nullptr);
     }
+
     [[nodiscard]] ConstIterator begin() const noexcept {
         return ConstIterator(this->head_.next_node);
     }
+
     [[nodiscard]] ConstIterator end() const noexcept {
         return ConstIterator(nullptr);
     }
+
     [[nodiscard]] ConstIterator cbegin() const noexcept {
         return ConstIterator(this->head_.next_node);
     }
+
     [[nodiscard]] ConstIterator cend() const noexcept {
         return ConstIterator(nullptr);
     }
+
     [[nodiscard]] Iterator before_begin() noexcept {
         return Iterator(&this->head_);
     }
+
     [[nodiscard]] ConstIterator cbefore_begin() const noexcept {
         return ConstIterator(const_cast<Node*>(&this->head_));
     }
+
     [[nodiscard]] ConstIterator before_begin() const noexcept {
         Node* ptr = &this->head_;
         return ConstIterator(ptr);
@@ -116,16 +125,19 @@ public:
 
     //constructors
     SingleLinkedList() :head_(), size_(0) {};
+
     SingleLinkedList(std::initializer_list<TType> values) {
         SingleLinkedList tmp;
         this->fromContainer(tmp, values);
-        this->swap(tmp);
+        this->Swap(tmp);
     }
+
     SingleLinkedList(const SingleLinkedList& other) {
         SingleLinkedList tmp;
         this->fromContainer(tmp, other);
-        this->swap(tmp);
+        this->Swap(tmp);
     }
+
     ~SingleLinkedList() {
         Clear();
     }
@@ -134,16 +146,18 @@ public:
     [[nodiscard]] size_t GetSize() const noexcept {
         return this->size_;
     }
+
+    //really cool logic way to realize isempty thnx
     [[nodiscard]] bool IsEmpty() const noexcept {
-        if (this->size_ != 0) {
-            return false;
-        }
-        return true;
+        return this->size_ == 0;
     }
+
+    //add empty lines in methods
     void PushFront(const TType& value) {
         this->head_.next_node = new Node(value, this->head_.next_node);
         ++this->size_;
     }
+
     void Clear() {
         while (this->head_.next_node != nullptr) {
             Node* nxt_nd = this->head_.next_node->next_node;
@@ -152,24 +166,26 @@ public:
         }
         this->size_ = 0;
     }
+
     SingleLinkedList& operator=(const SingleLinkedList& rhs) {
-        if (*this == rhs) {
-            return *this;
-        }
         SingleLinkedList tmp_othrs(rhs);
-        this->swap(tmp_othrs);
+        this->Swap(tmp_othrs);
         return *this;
     }
-    void swap(SingleLinkedList& other) noexcept {
+
+    //renamed
+    void Swap(SingleLinkedList& other) noexcept {
         std::swap(this->head_.next_node, other.head_.next_node);
         std::swap(this->size_, other.size_);
     }
+
     Iterator InsertAfter(ConstIterator pos, const TType& value) {
         Node* beforeInserted = pos.node_;
         beforeInserted->next_node = new Node(value, beforeInserted->next_node);
         ++this->size_;
         return Iterator{ beforeInserted->next_node };
     }
+
     void PopFront() noexcept {
         if (this->size_ != 0) {
             Node* tmp_next = this->head_.next_node->next_node;
@@ -178,6 +194,7 @@ public:
             this->size_--;
         }
     }
+
     Iterator EraseAfter(ConstIterator pos) noexcept {
         Node* beforeDeleted = pos.node_;
         Node* tmp_nxt = beforeDeleted->next_node->next_node;
@@ -205,16 +222,18 @@ private:
     }
 };
 
-
+//renamed
 //logics for class
 template <typename TType>
-void swap(SingleLinkedList<TType>& lhs, SingleLinkedList<TType>& rhs) noexcept {
-    lhs.swap(rhs);
+void Swap(SingleLinkedList<TType>& lhs, SingleLinkedList<TType>& rhs) noexcept {
+    lhs.Swap(rhs);
 }
 
+//void cast remoove and  pointers separated
 template <typename TType>
 bool operator==(const SingleLinkedList<TType>& lhs, const SingleLinkedList<TType>& rhs) {
-    auto ptr_lhs = lhs.begin(), ptr_rhs = rhs.begin();
+    auto ptr_lhs = lhs.begin();
+    auto ptr_rhs = rhs.begin();
     for (; ptr_lhs != lhs.end(); ptr_lhs++, ptr_rhs++) {
         if (!(ptr_lhs == ptr_rhs)) {
             return false;
@@ -228,10 +247,12 @@ bool operator!=(const SingleLinkedList<TType>& lhs, const SingleLinkedList<TType
     return !(lhs == rhs);
 }
 
+//void cast remoove and  pointers separated
 template <typename TType>
 bool operator<(const SingleLinkedList<TType>& lhs, const SingleLinkedList<TType>& rhs) {
-    auto ptr_lhs = lhs.begin(), ptr_rhs = rhs.begin();
-    for (; (ptr_lhs != lhs.end()) && (ptr_rhs != rhs.end()); ptr_lhs++, (void)ptr_rhs++) {
+    auto ptr_lhs = lhs.begin();
+    auto ptr_rhs = rhs.begin();
+    for (; (ptr_lhs != lhs.end()) && (ptr_rhs != rhs.end()); ptr_lhs++, ptr_rhs++) {
         if (*ptr_lhs < *ptr_rhs) {
             return true;
         }

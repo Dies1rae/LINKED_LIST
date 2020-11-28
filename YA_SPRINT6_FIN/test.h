@@ -1,4 +1,6 @@
 #pragma once
+//empty lines add
+
 #include "SingleLinkedList.h"
 
 #include <cassert>

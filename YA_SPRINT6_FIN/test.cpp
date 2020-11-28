@@ -1,4 +1,5 @@
 #include "test.h"
+
 using namespace std::literals;
 
 //basic function tests
@@ -262,7 +263,7 @@ void Test3() {
         const auto old_first_size = first.GetSize();
         const auto old_second_size = second.GetSize();
 
-        first.swap(second);
+        first.Swap(second);
 
         assert(second.begin() == old_first_begin);
         assert(first.begin() == old_second_begin);
